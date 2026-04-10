@@ -1,0 +1,61 @@
+package Ejercicios;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class AlgoritmoK_esimoXIOMARA {
+
+    public static int encontrarK_EsimoMayor(List<Integer> arreglo, int k) {
+        // Caso base: si solo hay un elemento
+        if (arreglo.size() == 1) {
+            return arreglo.get(0);
+        }
+
+        // 1. Seleccionamos un pivote (el elemento central)
+        int pivote = arreglo.get(arreglo.size() / 2);
+
+        // 2. Partición (Divide)
+        List<Integer> mayores = new ArrayList<>();
+        List<Integer> iguales = new ArrayList<>();
+        List<Integer> menores = new ArrayList<>();
+
+        for (int num : arreglo) {
+            if (num > pivote) {
+                mayores.add(num);
+            } else if (num == pivote) {
+                iguales.add(num);
+            } else {
+                menores.add(num);
+            }
+        }
+
+        // 3. Decisión (Vence)
+        if (k <= mayores.size()) {
+            // El elemento está en la lista de los más grandes
+            return encontrarK_EsimoMayor(mayores, k);
+        } else if (k <= (mayores.size() + iguales.size())) {
+            // El elemento es el pivote
+            return pivote;
+        } else {
+            // El elemento está en la lista de los más pequeños
+            // Ajustamos k restando los elementos que ya descartamos
+            int nuevoK = k - mayores.size() - iguales.size();
+            return encontrarK_EsimoMayor(menores, nuevoK);
+        }
+    }
+
+    public static void main(String[] args) {
+        // Casos de prueba de la imagen
+        probarCaso(Arrays.asList(4, 2, 7, 10, 4, 17), 3);
+        probarCaso(Arrays.asList(4, 2, 7, 10, 4, 1, 6), 5);
+        probarCaso(Arrays.asList(4, 2, 7, 1, 4, 6), 1);
+        probarCaso(Arrays.asList(9, 2, 7, 1, 7), 4);
+    }
+
+    // Método auxiliar para imprimir los resultados como en tu tabla
+    public static void probarCaso(List<Integer> lista, int k) {
+        int resultado = encontrarK_EsimoMayor(lista, k);
+        System.out.println("Arreglo: " + lista + " | k: " + k + " | Salida: " + resultado);
+    }
+}
